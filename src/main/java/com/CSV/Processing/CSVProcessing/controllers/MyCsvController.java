@@ -1,24 +1,62 @@
 package com.CSV.Processing.CSVProcessing.controllers;
 
+import com.CSV.Processing.CSVProcessing.helper.CSVHelper;
+import com.CSV.Processing.CSVProcessing.message.ResponseMessage;
+import com.CSV.Processing.CSVProcessing.service.CsvService;
 import com.CSV.Processing.CSVProcessing.service.ICsvService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
-@RestController
+
+@CrossOrigin(origins = "http://localhost:8080")
+@Controller
+@RequestMapping("/api/csv")
 public class MyCsvController {
 
     @Autowired
-    ICsvService iCsvService;
+    CsvService csvService;
 
 
-    @RequestMapping(value="/uploadCsv")
-    public void uploadCsvData(HttpServletRequest request)
-    {
+    @PostMapping("/upload")
+    public ResponseEntity<ResponseMessage> uploadCsvData(@RequestParam("file") MultipartFile file) {
+
+        String message = "";
+
+        if (CSVHelper.hasCSVFormat(file)) {
+            try {
+                csvService.save(file);
+
+                message = "Uploaded the file successfully" + file.getOriginalFilename();
+            } catch (Exception e) {
+                message = "Could not upload the file successfully" + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+
+
+        }
+
+        message = "Please upload a valid csv file ";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+
 
     }
+
+
+    @GetMapping("/wordgrid")
+    public String getHello(@RequestParam String wordList) {
+        return wordList;
+    }
+
+
 
 }
