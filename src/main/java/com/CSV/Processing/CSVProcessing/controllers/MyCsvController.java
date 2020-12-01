@@ -39,6 +39,7 @@ public class MyCsvController {
                 message = "Uploaded the file successfully" + file.getOriginalFilename();
             } catch (Exception e) {
                 message = "Could not upload the file successfully" + file.getOriginalFilename();
+                e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
             }
 
