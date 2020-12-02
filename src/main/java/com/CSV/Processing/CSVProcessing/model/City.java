@@ -14,8 +14,8 @@ public class City {
 
     private int areacode;
 
-    public City(int areacode) {
-        this.areacode = areacode;
+    public City() {
+
     }
 
     public Long getId() {

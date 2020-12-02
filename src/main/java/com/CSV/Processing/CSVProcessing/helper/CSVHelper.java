@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CSVHelper {
 
@@ -20,6 +22,7 @@ public class CSVHelper {
 
     public static String TYPE = "text/csv";
     static String[] HEADERs = {"Id", "name", "Population"};
+
 
     public static boolean hasCSVFormat(MultipartFile file) {
         if (!TYPE.equals(file.getContentType())) {
@@ -32,29 +35,60 @@ public class CSVHelper {
     public static List<City> csvToCities(InputStream is) {
 
         List<City> cities= new ArrayList<>();
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
-             CSVParser csvParser = new CSVParser(fileReader,
-                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+        BufferedReader br= new BufferedReader(new InputStreamReader(is));
+        ///### Approach  by creating list through streams
+
+        return br.lines().skip(1).map(mapToItem).collect(Collectors.toList());
+
+        //##### Approach by iteraring  the records
+
+//        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+//
+//
+//
+//             CSVParser csvParser = new CSVParser(fileReader,
+//                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+//
+//
+//
+//            Iterable<CSVRecord> csvRecords=csvParser.getRecords();
+//
+//            for (CSVRecord csvRecord:csvRecords)
+//            {
+//
+//                City city = new City();
+//                city.setAreacode(Integer.parseInt(csvRecord.get(2)));
+//                cities.add(city);
+//                System.out.println("I am Harish");
+//            }
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return cities;
 
 
 
-            Iterable<CSVRecord> csvRecords=csvParser.getRecords();
 
-            for (CSVRecord csvRecord:csvRecords)
-            {
-
-                City city = new City(Integer.parseInt(csvRecord.get(2)));
-                cities.add(city);
-                System.out.println("I am Harish");
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return cities;
 
     }
+
+
+    private static Function<String, City> mapToItem = (line) ->{
+
+        String[] p=line.split(",");
+        City city = new City();
+
+
+        city.setAreacode(Integer.parseInt(p[0]));
+
+
+        return city;
+
+
+    };
 }
+
