@@ -1,11 +1,12 @@
 package com.CSV.Processing.CSVProcessing.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name="city")
-public class City {
+public class City implements Serializable {
 
 
     @Id

@@ -1,46 +1,44 @@
 'use strict';
 
-var singleUploadForm = document.querySelector('#singleUploadForm');
-var singleFileUploadInput = document.querySelector('#singleFileUploadInput');
-var singleFileUploadError = document.querySelector('#singleFileUploadError');
-var singleFileUploadSuccess = document.querySelector('#singleFileUploadSuccess');
+(function () {
+	var fileCatcher = document.getElementById('file-catcher');
+  var fileInput = document.getElementById('file-input');
+  var fileListDisplay = document.getElementById('file-list-display');
 
+  var fileList = [];
+  var renderFileList, sendFile;
 
-function uploadSingleFile(file) {
-    var formData = new FormData();
-    formData.append("file", file);
+  fileCatcher.addEventListener('submit', function (evnt) {
+  	evnt.preventDefault();
+    fileList.forEach(function (file) {
+    	sendFile(file);
+    });
+  });
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/csv/upload");
-
-    xhr.onload = function() {
-        console.log(xhr.responseText);
-        var response = JSON.parse(xhr.responseText);
-        if(xhr.status == 200) {
-            singleFileUploadError.style.display = "none";
-            singleFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p>";
-            singleFileUploadSuccess.style.display = "block";
-        } else {
-            singleFileUploadSuccess.style.display = "none";
-            singleFileUploadError.innerHTML = "<p>"+(response && response.message)+"<p>" || "Some Error Occurred";
-            singleFileUploadSuccess.style.display = "block";
-
-        }
+  fileInput.addEventListener('change', function (evnt) {
+ 		fileList = [];
+  	for (var i = 0; i < fileInput.files.length; i++) {
+    	fileList.push(fileInput.files[i]);
     }
+    renderFileList();
+  });
 
-    xhr.send(formData);
-}
+  renderFileList = function () {
+  	fileListDisplay.innerHTML = '';
+    fileList.forEach(function (file, index) {
+    	var fileDisplayEl = document.createElement('p');
+      fileDisplayEl.innerHTML = (index + 1) + ': ' + file.name;
+      fileListDisplay.appendChild(fileDisplayEl);
+    });
+  };
 
+  sendFile = function (file) {
+  	var formData = new FormData();
+    var request = new XMLHttpRequest();
 
-
-singleUploadForm.addEventListener('submit', function(event){
-    var files = singleFileUploadInput.files;
-    if(files.length === 0) {
-        singleFileUploadError.innerHTML = "Please select a file";
-        singleFileUploadError.style.display = "block";
-    }
-    uploadSingleFile(files[0]);
-    event.preventDefault();
-}, true);
-
+    formData.set('file', file);
+    request.open("POST", 'http://localhost:8080/api/csv/upload');
+    request.send(formData);
+  };
+})();
 
