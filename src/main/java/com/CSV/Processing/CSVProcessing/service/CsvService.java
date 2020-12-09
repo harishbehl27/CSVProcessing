@@ -24,28 +24,31 @@ public class CsvService implements ICsvService{
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvService.class);
 
 
-    public List<City> save(MultipartFile file) throws Exception {
-        final long start = System.currentTimeMillis();
+    ///###Approach with Aync threads######
 
-        try {
-            List<City> cities= CSVHelper.csvToCities(file.getInputStream());
+//    public List<City> save(MultipartFile file) throws Exception {
+//        final long start = System.currentTimeMillis();
+//
+//        try {
+//            List<City> cities= CSVHelper.csvToCities(file.getInputStream());
+//
+//            LOGGER.info("Saving a list of cars of size {} records", cities.size() + "file name is" + file.getOriginalFilename());
+//            cityRepository.saveAll(cities);
+//
+//            LOGGER.info("Elapsed time: {}", (System.currentTimeMillis() - start));
+//            return cities;
+//
+//        } catch (IOException e) {
+//
+//            LOGGER.error("Failed to parse CSV file {}", e);
+//            throw new Exception("Failed to parse CSV file {}", e);
+//        }
+//
+//
+//    }
 
-            LOGGER.info("Saving a list of cars of size {} records", cities.size() + "file name is" + file.getOriginalFilename());
-            cityRepository.saveAll(cities);
-
-            LOGGER.info("Elapsed time: {}", (System.currentTimeMillis() - start));
-            return cities;
-
-        } catch (IOException e) {
-
-            LOGGER.error("Failed to parse CSV file {}", e);
-            throw new Exception("Failed to parse CSV file {}", e);
-        }
-
-
-    }
-
-   /* public CompletableFuture<List<City>> save(MultipartFile file) throws Exception {
+    @Async
+    public CompletableFuture<List<City>> save(MultipartFile file) throws Exception {
         final long start = System.currentTimeMillis();
 
         try {
@@ -59,12 +62,12 @@ public class CsvService implements ICsvService{
 
         } catch (IOException e) {
 
-            LOGGER.error("Failed to parse CSV file {}", e);
-            throw new Exception("Failed to parse CSV file {}", e);
+            LOGGER.error("Failed to parse CSV file {}" + file.getOriginalFilename(), e);
+            throw new Exception("Failed to parse CSV file {}" + file.getOriginalFilename(), e);
         }
 
 
-    }*/
+    }
 
     @Async
     public CompletableFuture<List<City>> getAllCars() {

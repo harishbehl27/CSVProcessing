@@ -41,6 +41,8 @@ public class MyCsvController {
                     csvService.save(file);
 
                     message = "Uploaded the file successfully" + file.getOriginalFilename();
+
+                    logger.info(message);
                     return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 
                 } catch (Exception e) {
