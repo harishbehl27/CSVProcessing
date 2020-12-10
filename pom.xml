@@ -8,6 +8,8 @@
 		<version>2.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+
 	<groupId>com.CSV.Processing</groupId>
 	<artifactId>CSVProcessing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -15,7 +17,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>12</java.version>
 	</properties>
 
 	<dependencies>

@@ -32,33 +32,39 @@ public class MyCsvController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadCsvData(@RequestParam(value = "file") MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadCsvData(@RequestParam(value = "file") MultipartFile[] files) {
 
         String message = "";
-
+        for (final MultipartFile file : files) {
             if (CSVHelper.hasCSVFormat(file)) {
                 try {
                     csvService.save(file);
 
                     message = "Uploaded the file successfully" + file.getOriginalFilename();
-                    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 
-                } catch (Exception e) {
+                    logger.info(message);
+
+
+                }
+
+                catch (Exception e) {
                     message = "Could not upload the file successfully" + file.getOriginalFilename();
                     logger.error("Error" + e);
-                    return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+
                 }
 
 
+            } else {
+
+                message = "Please upload a valid csv file ";
+                logger.error("Error" + message);
+            }
+
 
         }
 
-
-            message = "Please upload a valid csv file ";
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
-
-
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+    }
 
 
 
